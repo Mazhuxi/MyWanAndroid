@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TextView xmlns:android="http://schemas.android.com/apk/res/android"
+          android:id="@+id/tag_textview"
+          android:background="@drawable/nav_rightdata_shape"
+          android:gravity="center"
+          android:layout_width="wrap_content"
+          android:textSize="@dimen/dp_14"
+          android:text="常用网站"
+          android:padding="@dimen/dp_5"
+          android:layout_margin="@dimen/dp_7"
+          android:layout_height="@dimen/dp_40">
+
+</TextView>

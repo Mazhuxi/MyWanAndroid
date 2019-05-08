@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@mipmap/icon_wan_android"
+    android:paddingTop="90dp"
+    tools:context=".Yindao">
+
+    <ImageView
+        android:id="@+id/iv_w"
+        android:layout_width="65dp"
+        android:layout_height="65dp"
+        android:scaleType="fitXY"
+        android:layout_marginLeft="40dp"
+        android:layout_marginTop="15dp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:src="@mipmap/yindao_w"/>
+
+    <ImageView
+        android:id="@+id/iv_a"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        android:src="@mipmap/yindao_a"/>
+
+    <ImageView
+        android:id="@+id/iv_n"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:layout_marginLeft="120dp"
+        app:layout_constraintLeft_toLeftOf="@id/iv_a"
+        tools:ignore="MissingConstraints"
+        tools:layout_editor_absoluteY="16dp"
+        android:src="@mipmap/yindao_n"/>
+
+    <ImageView
+        android:id="@+id/iv_aa"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:layout_marginLeft="40dp"
+        android:layout_marginTop="128dp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:src="@mipmap/yindao_a"/>
+
+    <ImageView
+        android:id="@+id/iv_nn"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:layout_marginLeft="172dp"
+        android:layout_marginTop="144dp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:src="@mipmap/yindao_n"/>
+
+    <ImageView
+        android:id="@+id/iv_d"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:layout_marginLeft="288dp"
+        android:layout_marginTop="172dp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:src="@mipmap/yindao_d"/>
+
+    <ImageView
+        android:id="@+id/iv_r"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:layout_marginLeft="84dp"
+        android:layout_marginTop="232dp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:src="@mipmap/yindao_r"/>
+
+    <ImageView
+        android:id="@+id/iv_o"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:layout_marginLeft="212dp"
+        android:layout_marginTop="256dp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:src="@mipmap/yindao_o"/>
+
+    <ImageView
+        android:id="@+id/iv_i"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:layout_marginLeft="136dp"
+        android:layout_marginTop="344dp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:src="@mipmap/yindao_i"/>
+
+    <ImageView
+        android:id="@+id/iv_dd"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:layout_marginLeft="252dp"
+        android:layout_marginTop="372dp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:src="@mipmap/yindao_d"/>
+
+</android.support.constraint.ConstraintLayout>
