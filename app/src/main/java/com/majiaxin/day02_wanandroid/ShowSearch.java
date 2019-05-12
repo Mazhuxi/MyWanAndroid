@@ -1,6 +1,7 @@
 package com.majiaxin.day02_wanandroid;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DefaultItemAnimator;
@@ -9,11 +10,17 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.majiaxin.adapter.HomeAdapter;
+import com.majiaxin.app.BaseApp;
+import com.majiaxin.bean.DatasBean;
 import com.majiaxin.bean.HomeBean;
+import com.majiaxin.utils.DaoUtils;
 import com.majiaxin.utils.RecycleSpacesItemDecoration;
+import com.majiaxin.view.Constants;
+import com.squareup.leakcanary.RefWatcher;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -65,5 +72,37 @@ public class ShowSearch extends AppCompatActivity {
         HomeBean homeBean = new Gson().fromJson(bean, HomeBean.class);
 
         mAdapter.addArticleData(homeBean.getDatas());
+
+        mAdapter.setOnItemListener(new HomeAdapter.onItemListener() {
+            @Override
+            public void onClick(String title,String url) {
+                Intent intent = new Intent(ShowSearch.this,ShowUrlActivity.class);
+                intent.putExtra("url",url);
+                intent.putExtra("title",title);
+                startActivity(intent);
+            }
+        });
+
+
+        mAdapter.setOnCheakedListener(new HomeAdapter.onCheakedListener() {
+            @Override
+            public void onClick(int position, boolean isChecked,DatasBean item) {
+                SharedPreferences sp = ShowSearch.this.getSharedPreferences(Constants.LOGIN, ShowSearch.this.MODE_PRIVATE);
+                boolean loginBoolean = sp.getBoolean("loginBoolean", false);
+                if (loginBoolean == false){
+                    Toast.makeText(ShowSearch.this,"请先登录",Toast.LENGTH_SHORT).show();
+                }else {
+                    if (isChecked){
+                        DaoUtils.insertData(item);
+                        Toast.makeText(ShowSearch.this, "收藏成功", Toast.LENGTH_SHORT).show();
+                    }else {
+                        DaoUtils.deleteData(item);
+                        Toast.makeText(ShowSearch.this, "取消收藏", Toast.LENGTH_SHORT).show();
+                    }
+                }
+
+            }
+        });
     }
+
 }

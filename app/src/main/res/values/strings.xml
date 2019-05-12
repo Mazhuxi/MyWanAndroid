@@ -72,5 +72,6 @@
     <string name="search_clear">清空</string>
     <string name="hint_text">发现更多干货</string>
     <string name="nullText">快来搜索点干货吧(*^_^*)</string>
+    <string name="collection_null">暂时没有收藏数据\n\n快去收藏点喜欢的文章吧！\n\n(*^_^*)</string>
 
 </resources>

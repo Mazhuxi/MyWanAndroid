@@ -1,6 +1,7 @@
 package com.majiaxin.adapter;
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
@@ -13,6 +14,9 @@ import android.widget.TextView;
 
 import com.majiaxin.bean.NavigationBean;
 import com.majiaxin.day02_wanandroid.R;
+import com.majiaxin.day02_wanandroid.ShowSearch;
+import com.majiaxin.day02_wanandroid.ShowUrlActivity;
+import com.majiaxin.utils.CircularAnimUtil;
 import com.zhy.view.flowlayout.TagAdapter;
 import com.zhy.view.flowlayout.TagFlowLayout;
 
@@ -41,15 +45,15 @@ public class NavigationAdapter extends RecyclerView.Adapter {
     @Override
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder viewHolder, int i) {
         final int num = i;
-        ViewHolder viewHolder1 = (ViewHolder) viewHolder;
-        viewHolder1.tv.setText(list.get(i).getName());
+        ViewHolder holder = (ViewHolder) viewHolder;
+        holder.tv.setText(list.get(i).getName());
         ArrayList<String> title = new ArrayList<>();
         for (int j = 0; j < list.get(i).getArticles().size(); j++) {
             String title1 = list.get(i).getArticles().get(j).getTitle();
             title.add(title1);
         }
         if (title != null) {
-            viewHolder1.tabflowlayout.setAdapter(new TagAdapter<String>(title) {
+            holder.tabflowlayout.setAdapter(new TagAdapter<String>(title) {
                 @Override
                 public View getView(com.zhy.view.flowlayout.FlowLayout parent, int position, String string) {
                     /*int[] array = {R.color.Amber, R.color.arrow_color, R.color.colorPrimary
@@ -76,15 +80,15 @@ public class NavigationAdapter extends RecyclerView.Adapter {
 
             });
         }
-        viewHolder1.tabflowlayout.setOnTagClickListener(new TagFlowLayout.OnTagClickListener() {
+        holder.tabflowlayout.setOnTagClickListener(new TagFlowLayout.OnTagClickListener() {
             @Override
             public boolean onTagClick(View view, int position, com.zhy.view.flowlayout.FlowLayout parent) {
-               /* String link = list.get(num).getArticles().get(position).getLink();
+                String link = list.get(position).getArticles().get(position).getLink();
                 String name = list.get(position).getName();
-                Intent intent = new Intent(context, MoveWebActivity.class);
-                intent.putExtra("link", link);
+                Intent intent = new Intent(context, ShowUrlActivity.class);
+                intent.putExtra("url", link);
                 intent.putExtra("title", name);
-                context.startActivity(intent);*/
+                CircularAnimUtil.startActivity((Activity) context,intent,view,R.color.white);
                 return false;
             }
 

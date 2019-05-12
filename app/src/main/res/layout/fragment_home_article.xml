@@ -5,10 +5,9 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     app:cardUseCompatPadding="true"
-    app:cardBackgroundColor="@color/text_color"
     app:cardCornerRadius="@dimen/dp_3"
     app:cardElevation="@dimen/dp_2"
-    android:background="@color/white">
+    app:cardBackgroundColor="@color/card_background">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -104,12 +103,12 @@
                     android:visibility="gone"/>
             </LinearLayout>
 
-            <ImageView
+            <CheckBox
                 android:id="@+id/pager_like"
                 android:layout_width="@dimen/dp_25"
                 android:layout_height="@dimen/dp_25"
-                android:contentDescription="@null"
-                android:src="@drawable/home_like_selector" />
+                android:background="@drawable/menu_collection_selector"
+                android:button="@null" />
 
             <TextView
                 android:id="@+id/pager_niceDate"

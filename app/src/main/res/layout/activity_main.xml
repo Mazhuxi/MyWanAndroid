@@ -90,7 +90,7 @@
             android:layout_width="match_parent"
             android:layout_height="@dimen/dp_50"
             android:layout_alignParentBottom="true"
-            android:background="@color/text_color"
+            android:background="@color/card_background"
             android:padding="@dimen/dp_5"
             app:tabIndicatorHeight="@dimen/dp_0">
 

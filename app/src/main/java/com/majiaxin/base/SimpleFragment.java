@@ -9,6 +9,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 
+import com.majiaxin.app.BaseApp;
+
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
 

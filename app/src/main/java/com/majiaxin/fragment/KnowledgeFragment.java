@@ -50,6 +50,7 @@ public class KnowledgeFragment extends BaseFragment<KnowledgePresenter<Knowledge
         initSmartRefreshLayout();
     }
 
+    @SuppressLint("RestrictedApi")
     private void initRecyclerView() {
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
 
@@ -84,6 +85,15 @@ public class KnowledgeFragment extends BaseFragment<KnowledgePresenter<Knowledge
                         mainActivity.getTabLayout().setVisibility(View.VISIBLE);
                     }
                 }
+            }
+        });
+
+        //点击悬浮按钮回到顶部
+        mainActivity.getFloatingActionButton().setVisibility(View.VISIBLE);
+        mainActivity.getFloatingActionButton().setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mRecyclerView.smoothScrollToPosition(0);
             }
         });
     }

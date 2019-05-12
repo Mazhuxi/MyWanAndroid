@@ -1,30 +1,27 @@
 package com.majiaxin.fragment;
 
-import android.animation.ObjectAnimator;
 import android.annotation.SuppressLint;
 import android.content.Intent;
-import android.os.Bundle;
+import android.content.SharedPreferences;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.Toolbar;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
-import android.view.animation.AccelerateInterpolator;
 import android.widget.Toast;
 
-import com.bumptech.glide.util.LogTime;
 import com.majiaxin.adapter.HomeAdapter;
 import com.majiaxin.base.BaseFragment;
+import com.majiaxin.bean.DatasBean;
 import com.majiaxin.bean.HomeBannerbBean;
 import com.majiaxin.bean.HomeBean;
 import com.majiaxin.day02_wanandroid.MainActivity;
 import com.majiaxin.day02_wanandroid.R;
 import com.majiaxin.day02_wanandroid.ShowUrlActivity;
 import com.majiaxin.presenter.HomePresnter;
+import com.majiaxin.utils.DaoUtils;
 import com.majiaxin.utils.RecycleSpacesItemDecoration;
+import com.majiaxin.view.Constants;
 import com.majiaxin.view.HomeView;
 import com.scwang.smartrefresh.layout.SmartRefreshLayout;
 import com.scwang.smartrefresh.layout.api.RefreshLayout;
@@ -34,9 +31,6 @@ import com.scwang.smartrefresh.layout.listener.OnRefreshListener;
 import java.util.List;
 
 import butterknife.BindView;
-import butterknife.ButterKnife;
-import butterknife.Unbinder;
-
 public class HomeFragment extends BaseFragment<HomePresnter<HomeView>, HomeView> implements HomeView {
     @BindView(R.id.recyclerView)
     RecyclerView mRecyclerView;
@@ -63,6 +57,7 @@ public class HomeFragment extends BaseFragment<HomePresnter<HomeView>, HomeView>
 
     }
 
+    @SuppressLint("RestrictedApi")
     private void initRecyclerView() {
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
 
@@ -91,7 +86,8 @@ public class HomeFragment extends BaseFragment<HomePresnter<HomeView>, HomeView>
             }
         });
 
-        //点击悬浮按钮回到底部
+        //点击悬浮按钮回到顶部
+        mainActivity.getFloatingActionButton().setVisibility(View.VISIBLE);
         mainActivity.getFloatingActionButton().setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -108,6 +104,40 @@ public class HomeFragment extends BaseFragment<HomePresnter<HomeView>, HomeView>
                 startActivity(intent);
             }
         });
+
+        mAdapter.setOnTagListener(new HomeAdapter.onTagListener() {
+            @Override
+            public void onClick(String title) {
+                if (title.equals(getString(R.string.project))){
+                    ((MainActivity)getActivity()).getTabLayout().getTabAt(MainActivity.TYPE_PROJECT).select();
+
+                }else if(title.equals(getString(R.string.navigation))){
+                    ((MainActivity)getActivity()).getTabLayout().getTabAt(MainActivity.TYPE_NAVIGATION).select();
+                }
+            }
+        });
+
+        mAdapter.setOnCheakedListener(new HomeAdapter.onCheakedListener() {
+            @Override
+            public void onClick(int position, boolean isChecked,DatasBean item) {
+                SharedPreferences sp = getActivity().getSharedPreferences(Constants.LOGIN, getActivity().MODE_PRIVATE);
+                boolean loginBoolean = sp.getBoolean("loginBoolean", false);
+                if (loginBoolean == false){
+                    ((MainActivity)getActivity()).switchFragmnet(MainActivity.TYPE_LOGIN);
+                    isChecked = false;
+                }else {
+                    if (isChecked){
+                        DaoUtils.insertData(item);
+                        Toast.makeText(getActivity(), "收藏成功", Toast.LENGTH_SHORT).show();
+                    }else {
+                        DaoUtils.deleteData(item);
+                        Toast.makeText(getActivity(), "取消收藏", Toast.LENGTH_SHORT).show();
+                    }
+                }
+
+            }
+        });
+
     }
     private void initSmartRefreshLayout() {
         mSmartRefreshLayout.setOnLoadMoreListener(new OnLoadMoreListener() {

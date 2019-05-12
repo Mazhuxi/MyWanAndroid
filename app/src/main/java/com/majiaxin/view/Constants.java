@@ -26,7 +26,6 @@ public interface Constants {
     String MODE = "mode";
     String NIGHT_CURRENT_FRAG_POS = "fragment_pos";
 
-    String DATA = "data";
     String LOGIN = "login";
     String PICTOR = "PICTOR";
 

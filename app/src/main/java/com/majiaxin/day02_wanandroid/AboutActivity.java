@@ -17,6 +17,7 @@ import android.text.method.LinkMovementMethod;
 import android.view.View;
 import android.widget.TextView;
 
+import com.majiaxin.app.BaseApp;
 import com.majiaxin.base.SimpleActivity;
 import com.majiaxin.utils.ElasticOutInterpolator;
 import com.majiaxin.utils.SpUtil;
@@ -29,6 +30,7 @@ import com.scwang.smartrefresh.layout.api.RefreshHeader;
 import com.scwang.smartrefresh.layout.api.RefreshLayout;
 import com.scwang.smartrefresh.layout.listener.SimpleMultiPurposeListener;
 import com.scwang.smartrefresh.layout.util.DensityUtil;
+import com.squareup.leakcanary.RefWatcher;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -177,7 +179,6 @@ public class AboutActivity extends SimpleActivity {
             e.printStackTrace();
         }
     }
-
 
 
     private void updateTheme() {

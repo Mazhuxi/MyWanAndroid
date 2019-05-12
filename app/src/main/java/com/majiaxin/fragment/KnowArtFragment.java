@@ -4,6 +4,7 @@ package com.majiaxin.fragment;
 import android.animation.ObjectAnimator;
 import android.annotation.SuppressLint;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
@@ -17,12 +18,16 @@ import android.widget.Toast;
 
 import com.majiaxin.adapter.HomeAdapter;
 import com.majiaxin.base.BaseFragment;
+import com.majiaxin.bean.DatasBean;
 import com.majiaxin.bean.HomeBean;
 import com.majiaxin.day02_wanandroid.KnowArticleActivity;
+import com.majiaxin.day02_wanandroid.MainActivity;
 import com.majiaxin.day02_wanandroid.R;
 import com.majiaxin.day02_wanandroid.ShowUrlActivity;
 import com.majiaxin.presenter.KnowArticlePresenter;
+import com.majiaxin.utils.DaoUtils;
 import com.majiaxin.utils.RecycleSpacesItemDecoration;
+import com.majiaxin.view.Constants;
 import com.majiaxin.view.KnowArticleView;
 import com.scwang.smartrefresh.layout.SmartRefreshLayout;
 import com.scwang.smartrefresh.layout.api.RefreshLayout;
@@ -40,7 +45,6 @@ public class KnowArtFragment extends BaseFragment<KnowArticlePresenter<KnowArtic
     private static final String TAG = "KnowArtFragment";
     private int page = 0;
     private int mCid = 60;
-    private FloatingActionButton mFloatingActionButton;
 
     public static Fragment newInstance(int id) {
         KnowArtFragment knowArtFragment = new KnowArtFragment();
@@ -80,7 +84,7 @@ public class KnowArtFragment extends BaseFragment<KnowArticlePresenter<KnowArtic
         mRecyclerView.setItemAnimator(new DefaultItemAnimator());
 
         //滑动recyclerView隐藏
-        mFloatingActionButton = ((KnowArticleActivity) getActivity()).getFloatingActionButton();
+        KnowArticleActivity activity = (KnowArticleActivity) getActivity();
         mRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @SuppressLint("RestrictedApi")
             @Override
@@ -89,11 +93,11 @@ public class KnowArtFragment extends BaseFragment<KnowArticlePresenter<KnowArtic
                 int firstVisibleItem = ((LinearLayoutManager) recyclerView.getLayoutManager()).findFirstVisibleItemPosition();
                 if (firstVisibleItem != 0) {
                     if (dy > 10 ) {
-                        ObjectAnimator animator = ObjectAnimator.ofFloat(mFloatingActionButton, "translationY", mFloatingActionButton.getTranslationY(),mFloatingActionButton.getHeight() + 200);
+                        ObjectAnimator animator = ObjectAnimator.ofFloat(activity.getFloatingActionButton(), "translationY", activity.getFloatingActionButton().getTranslationY(),activity.getFloatingActionButton().getHeight() + 200);
                         animator.setDuration(200);
                         animator.start();
                     } else if (dy < 10) {
-                        ObjectAnimator animator = ObjectAnimator.ofFloat(mFloatingActionButton, "translationY", mFloatingActionButton.getHeight() + 200,0f);
+                        ObjectAnimator animator = ObjectAnimator.ofFloat(activity.getFloatingActionButton(), "translationY", activity.getFloatingActionButton().getHeight() + 200,0f);
                         animator.setDuration(200);
                         animator.start();
                     }
@@ -101,15 +105,12 @@ public class KnowArtFragment extends BaseFragment<KnowArticlePresenter<KnowArtic
             }
         });
 
-        //点击悬浮按钮回到顶部
-        if (mFloatingActionButton != null){
-            mFloatingActionButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    mRecyclerView.smoothScrollToPosition(0);
-                }
-            });
-        }
+        activity.getFloatingActionButton().setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mRecyclerView.smoothScrollToPosition(0);
+            }
+        });
 
         mAdapter.setOnItemListener(new HomeAdapter.onItemListener() {
             @Override
@@ -118,6 +119,26 @@ public class KnowArtFragment extends BaseFragment<KnowArticlePresenter<KnowArtic
                 intent.putExtra("url",url);
                 intent.putExtra("title",title);
                 startActivity(intent);
+            }
+        });
+
+        mAdapter.setOnCheakedListener(new HomeAdapter.onCheakedListener() {
+            @Override
+            public void onClick(int position, boolean isChecked,DatasBean item) {
+                SharedPreferences sp = getActivity().getSharedPreferences(Constants.LOGIN, getActivity().MODE_PRIVATE);
+                boolean loginBoolean = sp.getBoolean("loginBoolean", false);
+                if (loginBoolean == false){
+                    ((MainActivity)getActivity()).switchFragmnet(MainActivity.TYPE_LOGIN);
+                }else {
+                    if (isChecked){
+                        DaoUtils.insertData(item);
+                        Toast.makeText(getActivity(), "收藏成功", Toast.LENGTH_SHORT).show();
+                    }else {
+                        DaoUtils.deleteData(item);
+                        Toast.makeText(getActivity(), "取消收藏", Toast.LENGTH_SHORT).show();
+                    }
+                }
+
             }
         });
     }

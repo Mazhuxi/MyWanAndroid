@@ -25,7 +25,7 @@
             android:layout_gravity="center"
             android:layout_marginTop="@dimen/dp_16"
             android:drawablePadding="@dimen/dp_8"
-            android:drawableTop="@mipmap/ic_launcher"
+            android:drawableTop="@mipmap/ic_launcher_new"
             android:gravity="center"
             android:text="@string/awesome_wan_android"
             android:textAllCaps="false"

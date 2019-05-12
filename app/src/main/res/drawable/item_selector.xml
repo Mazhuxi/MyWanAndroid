@@ -3,6 +3,6 @@
 
     <item android:state_pressed="true" android:drawable="@color/project_tabtext_color"></item>
     <item android:state_focused="true" android:drawable="@color/project_tabtext_color"></item>
-    <item android:drawable="@color/text_color"></item>
+    <item android:drawable="@color/card_background"></item>
 
 </selector>

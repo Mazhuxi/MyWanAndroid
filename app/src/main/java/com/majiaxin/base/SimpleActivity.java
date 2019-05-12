@@ -10,6 +10,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.WindowManager;
 
+import com.majiaxin.app.BaseApp;
+import com.squareup.leakcanary.RefWatcher;
 import com.umeng.analytics.MobclickAgent;
 
 import butterknife.ButterKnife;
@@ -69,6 +71,9 @@ public abstract class SimpleActivity extends AppCompatActivity {
         if (mUnbinder == null) {
             mUnbinder.unbind();
         }
+
+        RefWatcher refWatcher = BaseApp.getRefWatcher(this);//1
+        refWatcher.watch(this);
     }
 
     @Override

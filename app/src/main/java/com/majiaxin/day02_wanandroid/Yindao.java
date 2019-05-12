@@ -1,94 +1,113 @@
 package com.majiaxin.day02_wanandroid;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.os.Handler;
 import android.os.Message;
-import android.support.v7.app.AppCompatActivity;
-import android.view.animation.AlphaAnimation;
-import android.widget.ImageView;
 
+import com.airbnb.lottie.LottieAnimationView;
+import com.majiaxin.app.BaseApp;
+import com.majiaxin.base.SimpleActivity;
+import com.squareup.leakcanary.RefWatcher;
+
+import java.lang.ref.WeakReference;
 import java.util.Timer;
 import java.util.TimerTask;
 
-public class Yindao extends AppCompatActivity {
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import butterknife.OnClick;
 
-    private ImageView mIvW;
-    private ImageView mIvA;
-    private ImageView mIvN;
-    private ImageView mIvAa;
-    private ImageView mIvNn;
-    private ImageView mIvD;
-    private ImageView mIvR;
-    private ImageView mIvO;
-    private ImageView mIvI;
-    private ImageView mIvDd;
-    private Timer mTimer;
-    int i = 2;
-    Handler mHandler = new Handler() {
-        @Override
-        public void handleMessage(Message msg) {
-            if (msg.what == 10) {
-                i--;
-                if (i <= 0) {
-                    mTimer.cancel();
-                    startActivity(new Intent(Yindao.this,MainActivity.class));
-                    finish();
-                }
-            }
-        }
-    };
+public class Yindao extends SimpleActivity {
+
+    @BindView(R.id.one_animation)
+    LottieAnimationView mOneAnimation;
+    @BindView(R.id.two_animation)
+    LottieAnimationView mTwoAnimation;
+    @BindView(R.id.three_animation)
+    LottieAnimationView mThreeAnimation;
+    @BindView(R.id.four_animation)
+    LottieAnimationView mFourAnimation;
+    @BindView(R.id.five_animation)
+    LottieAnimationView mFiveAnimation;
+    @BindView(R.id.six_animation)
+    LottieAnimationView mSixAnimation;
+    @BindView(R.id.seven_animation)
+    LottieAnimationView mSevenAnimation;
+    @BindView(R.id.eight_animation)
+    LottieAnimationView mEightAnimation;
+    @BindView(R.id.nine_animation)
+    LottieAnimationView mNineAnimation;
+    @BindView(R.id.ten_animation)
+    LottieAnimationView mTenAnimation;
+    private CountDownTimer timer;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_yindao);
-        initView();
+    protected void initData() {
+        //调用开始动画的方法
+        /*startAnimation(mOneAnimation, "W.json");
+        startAnimation(mTwoAnimation, "A.json");
+        startAnimation(mThreeAnimation, "N.json");
+        startAnimation(mFourAnimation, "A.json");
+        startAnimation(mFiveAnimation, "N.json");
+        startAnimation(mSixAnimation, "D.json");
+        startAnimation(mSevenAnimation, "R.json");
+        startAnimation(mEightAnimation, "I.json");
+        startAnimation(mNineAnimation, "O.json");
+        startAnimation(mTenAnimation, "D.json");*/
 
+        //跳转页面
+        timer = new CountDownTimer(1500, 1000) {
+            @Override
+            public void onTick(long millisUntilFinished) {
 
+            }
+            @Override
+            public void onFinish() {
+                timer.cancel();
+                startActivity(new Intent(Yindao.this, MainActivity.class));
+                overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
+                finish();
+            }
+        }.start();
     }
 
-    private void initView() {
-        mIvW = (ImageView) findViewById(R.id.iv_w);
-        mIvA = (ImageView) findViewById(R.id.iv_a);
-        mIvN = (ImageView) findViewById(R.id.iv_n);
-        mIvAa = (ImageView) findViewById(R.id.iv_aa);
-        mIvNn = (ImageView) findViewById(R.id.iv_nn);
-        mIvD = (ImageView) findViewById(R.id.iv_d);
-        mIvR = (ImageView) findViewById(R.id.iv_r);
-        mIvO = (ImageView) findViewById(R.id.iv_o);
-        mIvI = (ImageView) findViewById(R.id.iv_i);
-        mIvDd = (ImageView) findViewById(R.id.iv_dd);
+    private void cancelAnimation() {
+        //调用取消动画的方法
+        cancelAnimation(mOneAnimation);
+        cancelAnimation(mTwoAnimation);
+        cancelAnimation(mThreeAnimation);
+        cancelAnimation(mFourAnimation);
+        cancelAnimation(mFiveAnimation);
+        cancelAnimation(mSixAnimation);
+        cancelAnimation(mSevenAnimation);
+        cancelAnimation(mEightAnimation);
+        cancelAnimation(mNineAnimation);
+        cancelAnimation(mTenAnimation);
+    }
 
+    private void startAnimation(LottieAnimationView mLottieAnimationView, String animationName) {
+        mLottieAnimationView.setAnimation(animationName);   //设置一个动画
+        mLottieAnimationView.playAnimation(); //播放动画
+    }
 
-        //创建透明度动画
-        AlphaAnimation alphaAnimation = new AlphaAnimation(0.0f, 1.0f);
-        alphaAnimation.setDuration(2000);
+    private void cancelAnimation(LottieAnimationView mLottieAnimationView) {
+        //判断对象是否为空，不为空就取消
+        if (mLottieAnimationView != null) {
+            mLottieAnimationView.cancelAnimation();
+        }
+    }
 
-        AlphaAnimation alphaAnimation1 = new AlphaAnimation(0.0f, 1.0f);
-        alphaAnimation1.setDuration(2000);
-        alphaAnimation1.setStartOffset(500);
+    @Override
+    protected int getLayoutId() {
+        return R.layout.activity_yindao;
+    }
 
-        //设置动画
-        mIvW.startAnimation(alphaAnimation);
-        mIvA.startAnimation(alphaAnimation);
-        mIvN.startAnimation(alphaAnimation1);
-        mIvAa.startAnimation(alphaAnimation);
-        mIvNn.startAnimation(alphaAnimation);
-        mIvD.startAnimation(alphaAnimation);
-        mIvR.startAnimation(alphaAnimation1);
-        mIvO.startAnimation(alphaAnimation1);
-        mIvI.startAnimation(alphaAnimation);
-        mIvDd.startAnimation(alphaAnimation1);
-
-        //倒计时跳转
-        mTimer = new Timer();
-        mTimer.schedule(new TimerTask() {
-            @Override
-            public void run() {
-                mHandler.sendEmptyMessage(10);
-            }
-        }, 1000, 1000);
-
+    @Override
+    protected void onDestroy() {
+        cancelAnimation();  //清除动画
+        super.onDestroy();
     }
 }

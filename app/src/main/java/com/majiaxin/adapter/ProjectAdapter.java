@@ -9,6 +9,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.majiaxin.bean.DatasBean;
 import com.majiaxin.bean.HomeBean;
 import com.majiaxin.day02_wanandroid.R;
 import com.majiaxin.utils.SpUtil;
@@ -19,7 +20,7 @@ import java.util.List;
 
 public class ProjectAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     private Context context;
-    private List<HomeBean.DatasBean> mList = new ArrayList<>();
+    private List<DatasBean> mList = new ArrayList<>();
 
     public ProjectAdapter(Context context) {
         this.context = context;
@@ -40,9 +41,9 @@ public class ProjectAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
     @Override
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder viewHolder, final int i) {
         ProjectHolder holder = (ProjectHolder) viewHolder;
-        final HomeBean.DatasBean data = mList.get(i);
+        final DatasBean data = mList.get(i);
         //赋值
-        Boolean isPicture = (Boolean) SpUtil.getParam(Constants.PICTOR, true);
+        Boolean isPicture = (Boolean) SpUtil.getParam(Constants.PICTOR, false);
         if (isPicture) {
             Glide.with(context).load(R.mipmap.ic_launcher_new).into(holder.project_envelopPic);
         } else {
@@ -66,12 +67,12 @@ public class ProjectAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         return mList.size();
     }
 
-    public void addProjectList(List<HomeBean.DatasBean> list) {
+    public void addProjectList(List<DatasBean> list) {
         mList.addAll(list);
         notifyDataSetChanged();
     }
 
-    public void addData(List<HomeBean.DatasBean> datas) {
+    public void addData(List<DatasBean> datas) {
         mList.addAll(datas);
         notifyDataSetChanged();
     }

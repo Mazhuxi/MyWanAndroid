@@ -11,7 +11,9 @@ import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.TextView;
 
+import com.majiaxin.app.BaseApp;
 import com.majiaxin.base.SimpleActivity;
+import com.squareup.leakcanary.RefWatcher;
 
 import java.lang.reflect.Method;
 
@@ -106,4 +108,5 @@ public class ShowUrlActivity extends SimpleActivity {
         }
         return super.onMenuOpened(featureId, menu);
     }
+
 }

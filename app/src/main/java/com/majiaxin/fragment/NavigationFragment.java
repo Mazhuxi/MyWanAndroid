@@ -1,6 +1,7 @@
 package com.majiaxin.fragment;
 
 
+import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -16,6 +17,7 @@ import android.widget.RadioGroup;
 import com.majiaxin.adapter.NavigationAdapter;
 import com.majiaxin.api.ApiService;
 import com.majiaxin.bean.NavigationBean;
+import com.majiaxin.day02_wanandroid.MainActivity;
 import com.majiaxin.day02_wanandroid.R;
 import com.majiaxin.utils.net.BaseObserver;
 import com.majiaxin.utils.net.HttpUtils;
@@ -66,6 +68,7 @@ public class NavigationFragment extends Fragment {
 
                     }
 
+                    @SuppressLint("RestrictedApi")
                     @Override
                     public void onNext(NavigationBean moveBean) {
                         final List<NavigationBean.DataBean> list = moveBean.getData();
@@ -84,6 +87,16 @@ public class NavigationFragment extends Fragment {
                             @Override
                             public void onTabReselected(TabView tab, int position) {
 
+                            }
+                        });
+
+                        //点击悬浮按钮回到顶部
+                        final MainActivity mainActivity = (MainActivity) getActivity();
+                        mainActivity.getFloatingActionButton().setVisibility(View.VISIBLE);
+                        mainActivity.getFloatingActionButton().setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                rlv.smoothScrollToPosition(0);
                             }
                         });
 
@@ -152,17 +165,20 @@ public class NavigationFragment extends Fragment {
                             public ITabView.TabTitle getTitle(int position) {
                                 return new TabView.TabTitle.Builder()
                                         .setContent(list.get(position).getName())
+                                        .setTextColor(getResources().getColor(R.color.register_bt_background),getResources().getColor(R.color.comment_text))
                                         .build();
                             }
 
                             @Override
                             public int getBackground(int position) {
-                                return 0;
+                                return getResources().getColor(R.color.text_color);
                             }
                         });
 
                     }
                 });
+
+
 
     }
 

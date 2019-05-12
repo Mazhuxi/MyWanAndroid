@@ -1,13 +1,54 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#000000</color>
-    <color name="colorPrimaryDark">#000000</color>
-    <color name="colorAccent">#F39C12</color>
+    <color name="colorPrimary">#0F1010</color>
+    <color name="colorPrimaryDark">#0F1010</color>
+    <color name="colorAccent">#181921</color>
+    <color name="tab_text_color">#F39C12 </color>
     <color name="white">#000000</color>
-    <color name="text_color">#000000</color>
-    <color name="comment_text">#cecece</color>
-    <color name="project_tabtext_color">#5b5d5c</color>
-    <color name="login_btn_line">#5b5d5c</color>
-    <color name="comment_line">#5b5d5c</color>
-    <color name="register_background">#ffffff</color>
+    <color name="text_color">#FFFFFF</color>
+    <color name="card_background">#3E3D3D</color>
+    <color name="floating_background">#009688</color>
+    <color name="black">#ffffff</color>
+    <color name="colorLogo">#FED530</color>
+    <color name="comment_text">#ffffff</color>
+    <color name="colorPrimaryOverlay">#0F1010</color>
+    <color name="light_red">#f9382a</color>
+    <color name="light_green">#3fc75f</color>
+
+    <color name="know_title_color1">#E081E0</color>
+    <color name="know_title_color2">#F667A7</color>
+    <color name="know_title_color3">#8DD8F8</color>
+    <color name="know_title_color4">#CBF88D</color>
+    <color name="know_title_color5">#FAD794</color>
+
+    <color name="nav_title_color1">#32741B</color>
+    <color name="nav_title_color2">#6932A2</color>
+    <color name="nav_title_color3">#5B4C1C</color>
+    <color name="nav_title_color4">#323C7B</color>
+    <color name="nav_title_color5">#910C77</color>
+
+
+    <color name="search_title_color1">#F88F55</color>
+    <color name="search_title_color2">#67CCB7</color>
+    <color name="search_title_color3">#E78F8F</color>
+    <color name="search_title_color4">#90C5F0</color>
+    <color name="search_title_color5">#C0AFD0</color>
+
+
+
+    <color name="text_color_unselected">#9FDFFF</color>
+    <color name="tab_Background">#00ABFF</color>
+    <color name="search_button_background">#DF5427</color>
+    <color name="project_tabtext_color">#615E5E</color>
+    <color name="comment_line">#615E5E</color>
+    <color name="project_tab_red">#e26d2e</color>
+    <color name="grey">#615E5E</color>
+    <color name="nav_left_background">#615E5E</color>
+    <color name="set_efecec">#615E5E</color>
+    <color name="endColor">#48A1FE</color>
+    <color name="login_btn_background">#FF4081</color>
+    <color name="login_btn_line">#cfcfd2</color>
+    <color name="register_btn_background">#303F9F</color>
+    <color name="register_background">#303C59</color>
+    <color name="register_bt_background">#36BC9B</color>
 </resources>

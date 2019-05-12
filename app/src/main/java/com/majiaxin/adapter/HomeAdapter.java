@@ -2,16 +2,21 @@ package com.majiaxin.adapter;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.majiaxin.bean.DatasBean;
 import com.majiaxin.bean.HomeBannerbBean;
 import com.majiaxin.bean.HomeBean;
+import com.majiaxin.day02_wanandroid.MainActivity;
 import com.majiaxin.day02_wanandroid.R;
 import com.youth.banner.Banner;
 import com.youth.banner.BannerConfig;
@@ -26,7 +31,7 @@ import java.util.List;
 
 public class HomeAdapter extends RecyclerView.Adapter {
     private Context mContext;
-    private List<HomeBean.DatasBean> mArtList = new ArrayList<>();
+    private List<DatasBean> mArtList = new ArrayList<>();
     private List<HomeBannerbBean.DataBean> mBannerList = new ArrayList<>();
     private int TYPE_BANNER = 1;
     private int TYPE_ARTICLE = 2;
@@ -36,20 +41,20 @@ public class HomeAdapter extends RecyclerView.Adapter {
         mContext = context;
     }
 
-    public void clearArtList(){
-        if (mArtList.size()>0){
+    public void clearArtList() {
+        if (mArtList.size() > 0) {
             mArtList.clear();
         }
     }
 
-    public void clearBannerList(){
-        if (mArtList.size()>0){
+    public void clearBannerList() {
+        if (mArtList.size() > 0) {
             mBannerList.clear();
         }
     }
 
-    public void clearTitleList(){
-        if (mBannerTitles.size() > 0){
+    public void clearTitleList() {
+        if (mBannerTitles.size() > 0) {
             mBannerTitles.clear();
         }
     }
@@ -101,7 +106,7 @@ public class HomeAdapter extends RecyclerView.Adapter {
             holder.pager_banner.setOnBannerListener(new OnBannerListener() {
                 @Override
                 public void OnBannerClick(int position) {
-                    mOnItemListener.onClick(mBannerList.get(position).getTitle(),mBannerList.get(position).getUrl());
+                    mOnItemListener.onClick(mBannerList.get(position).getTitle(), mBannerList.get(position).getUrl());
                 }
             });
         } else {
@@ -112,7 +117,7 @@ public class HomeAdapter extends RecyclerView.Adapter {
                 newPositon = position;
             }
             ArticleViewHolder holder = (ArticleViewHolder) viewHolder;
-            final HomeBean.DatasBean article = mArtList.get(newPositon);
+            final DatasBean article = mArtList.get(newPositon);
 
             holder.pager_author.setText(article.getAuthor());
             holder.pager_chapterName.setText(article.getSuperChapterName() + "/" + article.getChapterName());
@@ -129,34 +134,40 @@ public class HomeAdapter extends RecyclerView.Adapter {
                 holder.pager_green_tag.setVisibility(View.GONE);
             }
 
-            if (article.getTags() != null && article.getTags().size() > 0) {
-                if (article.getSuperChapterName().contains(mContext.getString(R.string.project))) {
-                    holder.pager_red_tag.setVisibility(View.VISIBLE);
-                    holder.pager_red_tag.setText(R.string.project);
-                } else if (article.getSuperChapterName().contains(mContext.getString(R.string.navigation))) {
-                    holder.pager_red_tag.setVisibility(View.VISIBLE);
-                    holder.pager_red_tag.setText(R.string.navigation);
-                } else {
-                    holder.pager_red_tag.setVisibility(View.GONE);
-                }
+
+            if (article.getSuperChapterName().contains(mContext.getString(R.string.project))) {
+                holder.pager_red_tag.setVisibility(View.VISIBLE);
+                holder.pager_red_tag.setText(R.string.project);
+            } else if (article.getSuperChapterName().contains(mContext.getString(R.string.navigation))) {
+                holder.pager_red_tag.setVisibility(View.VISIBLE);
+                holder.pager_red_tag.setText(R.string.navigation);
+            } else {
+                holder.pager_red_tag.setVisibility(View.GONE);
             }
+
 
             holder.itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    if (mOnItemListener != null){
-                        mOnItemListener.onClick(article.getTitle(),article.getLink());
+                    if (mOnItemListener != null) {
+                        mOnItemListener.onClick(article.getTitle(), article.getLink());
                     }
                 }
             });
+
             holder.pager_red_tag.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    if (mOnTagListener != null){
-                        if (article.getTags().size() >0){
-                            mOnTagListener.onClick(article.getTags().get(0).getUrl());
-                        }
+                    if (mOnTagListener != null) {
+                        mOnTagListener.onClick(holder.pager_red_tag.getText().toString().trim());
                     }
+                }
+            });
+
+            holder.pager_like.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                @Override
+                public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                    mOnCheakedListener.onClick(position, isChecked, mArtList.get(position));
                 }
             });
         }
@@ -196,7 +207,7 @@ public class HomeAdapter extends RecyclerView.Adapter {
         private TextView pager_title;
         private TextView pager_green_tag;
         private TextView pager_red_tag;
-        private ImageView pager_like;
+        private CheckBox pager_like;
         private TextView pager_niceDate;
 
         public ArticleViewHolder(@NonNull View itemView) {
@@ -213,7 +224,7 @@ public class HomeAdapter extends RecyclerView.Adapter {
     }
 
 
-    public void addArticleData(List<HomeBean.DatasBean> datas) {
+    public void addArticleData(List<DatasBean> datas) {
         if (datas != null) {
             mArtList.addAll(datas);
             notifyDataSetChanged();
@@ -227,23 +238,36 @@ public class HomeAdapter extends RecyclerView.Adapter {
         }
     }
 
+    //条目监听回调
     private onItemListener mOnItemListener;
 
     public void setOnItemListener(onItemListener onItemListener) {
         mOnItemListener = onItemListener;
     }
 
-    public interface onItemListener{
-        void onClick(String title,String url);
+    public interface onItemListener {
+        void onClick(String title, String url);
     }
 
+    //项目监听回调
     private onTagListener mOnTagListener;
 
     public void setOnTagListener(onTagListener onTagListener) {
         mOnTagListener = onTagListener;
     }
 
-    public interface onTagListener{
-        void onClick(String tagUrl);
+    public interface onTagListener {
+        void onClick(String title);
+    }
+
+    //收藏监听回调
+    private onCheakedListener mOnCheakedListener;
+
+    public void setOnCheakedListener(onCheakedListener onCheakedListener) {
+        mOnCheakedListener = onCheakedListener;
+    }
+
+    public interface onCheakedListener {
+        void onClick(int position, boolean isChecked, DatasBean item);
     }
 }

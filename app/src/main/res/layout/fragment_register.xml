@@ -2,6 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:id="@+id/linearLayout"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:background="@color/register_background"
@@ -34,7 +35,6 @@
         android:drawableStart="@drawable/mailbox"
         android:hint="@string/email"
         android:paddingStart="@dimen/dp_15"
-        android:password="true"
         android:textColorHint="@color/text_color"
         tools:ignore="RtlSymmetry" />
 

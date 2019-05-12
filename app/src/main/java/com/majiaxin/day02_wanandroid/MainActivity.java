@@ -2,7 +2,9 @@ package com.majiaxin.day02_wanandroid;
 
 
 import android.annotation.SuppressLint;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
@@ -12,6 +14,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
@@ -30,6 +33,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.gson.Gson;
+import com.majiaxin.app.BaseApp;
 import com.majiaxin.base.BaseActivity;
 import com.majiaxin.bean.HomeBean;
 import com.majiaxin.bean.NetBean;
@@ -44,12 +48,18 @@ import com.majiaxin.fragment.SettingsFragment;
 import com.majiaxin.fragment.WechatFragment;
 import com.majiaxin.myview.FlowLayout;
 import com.majiaxin.presenter.NetPresenter;
-import com.majiaxin.presenter.SearchTitleAdapter;
+import com.majiaxin.adapter.SearchTitleAdapter;
 import com.majiaxin.utils.CircularAnimUtil;
 import com.majiaxin.utils.SpUtil;
 import com.majiaxin.utils.SystemUtil;
+import com.majiaxin.utils.cache.EventMessage;
 import com.majiaxin.view.Constants;
 import com.majiaxin.view.NetView;
+import com.squareup.leakcanary.RefWatcher;
+
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -83,8 +93,8 @@ public class MainActivity extends BaseActivity<NetPresenter<NetView>, NetView> i
     public static int TYPE_HOME = 0;
     private int TYPE_KOMWLEDGE = 1;
     private int TYPE_WECHAT = 2;
-    private int TYPE_NAVIGATION = 3;
-    private int TYPE_PROJECT = 4;
+    public static int TYPE_NAVIGATION = 3;
+    public static int TYPE_PROJECT = 4;
     private int TYPE_COLLECT = 5;
     public static int TYPE_SETTING = 6;
     public static int TYPE_LOGIN = 7;
@@ -101,7 +111,11 @@ public class MainActivity extends BaseActivity<NetPresenter<NetView>, NetView> i
     private RecyclerView mViewRecyclerView;
     private SearchTitleAdapter mAdapter;
     private String mQuary = "";
+    private ArrayList<String> mQuaryList = new ArrayList<>();
     private TextView mNullText;
+    private TextView mLogin;
+    private HomeFragment mHomeFragment;
+    private CollectFragment mCollectFragment;
 
     public Toolbar getToolbar() {
         return mToolbar;
@@ -115,12 +129,30 @@ public class MainActivity extends BaseActivity<NetPresenter<NetView>, NetView> i
         return mFloatingActionButton;
     }
 
+    public CollectFragment getCollectFragment() {
+        return mCollectFragment;
+    }
+
     public void showDrawerLayout() {
         mDrawerLayout.openDrawer(Gravity.LEFT);
     }
 
     @Override
+    public void setContentView(View view) {
+        super.setContentView(view);
+        EventBus.getDefault().register(this);
+    }
+
+    @Override
     protected void initData() {
+        SharedPreferences sp = getSharedPreferences(Constants.LOGIN, MODE_PRIVATE);
+        mLogin = mNavigationView.getHeaderView(0).findViewById(R.id.login_header);
+        if (sp.getBoolean("loginBoolean",false)){
+            mLogin.setText(sp.getString("username",getString(R.string.login)));
+        }else {
+            mLogin.setText(getString(R.string.login));
+        }
+
         //设置颜色集合
         initColors();
 
@@ -163,7 +195,6 @@ public class MainActivity extends BaseActivity<NetPresenter<NetView>, NetView> i
                 initPopupWindow(R.layout.activity_main_popup_search);
                 CircularAnimUtil.show(mToolbarSearch);
                 mPopupWindow.showAtLocation(mDrawerLayout, Gravity.CENTER, 0, 0);
-
             }
         });
 
@@ -220,8 +251,20 @@ public class MainActivity extends BaseActivity<NetPresenter<NetView>, NetView> i
             mPresenter.getSearchData();
             //设置recyclerView
             mViewRecyclerView.setLayoutManager(new LinearLayoutManager(this));
-            mAdapter = new SearchTitleAdapter(this);
+            mAdapter = new SearchTitleAdapter(this,mQuaryList);
             mViewRecyclerView.setAdapter(mAdapter);
+
+            //点击跳转
+            mAdapter.setItemListener(new SearchTitleAdapter.ItemListener() {
+                @Override
+                public void onClick(String quary) {
+                    mQuary = quary;
+                    if (!mQuary.equals("")) {
+                        mPresenter.getArtData(1, 408, mQuary);
+                    }
+                }
+            });
+
             initExitText();
         }
     }
@@ -230,8 +273,8 @@ public class MainActivity extends BaseActivity<NetPresenter<NetView>, NetView> i
         mViewSearchBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                CircularAnimUtil.show(mViewSearchBtn);
                 mQuary = mViewSearchText.getText().toString().trim();
-
                 if (!mQuary.equals("")) {
                     mPresenter.getArtData(1, 408, mQuary);
                 }
@@ -242,7 +285,9 @@ public class MainActivity extends BaseActivity<NetPresenter<NetView>, NetView> i
         mViewClear.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                mQuaryList.clear();
                 mAdapter.mList.clear();
+                mAdapter.notifyDataSetChanged();
             }
         });
     }
@@ -282,14 +327,30 @@ public class MainActivity extends BaseActivity<NetPresenter<NetView>, NetView> i
         mDrawerLayout.addDrawerListener(toggle);
 
         //侧滑头部监听
-        View headerView = mNavigationView.getHeaderView(0);
-        headerView.findViewById(R.id.login_header).setOnClickListener(new View.OnClickListener() {
+        mLogin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                switchFragmnet(TYPE_LOGIN);
-                setVisibility(View.GONE);
-                mToolbar.setVisibility(View.GONE);
-                mDrawerLayout.closeDrawer(Gravity.LEFT);
+                SharedPreferences sp = getSharedPreferences(Constants.LOGIN, MODE_PRIVATE);
+                mLogin = mNavigationView.getHeaderView(0).findViewById(R.id.login_header);
+                if (sp.getBoolean("loginBoolean",false)){
+                    new AlertDialog.Builder(MainActivity.this)
+                            .setTitle("提示")
+                            .setMessage("已登录，是否退出登录？")
+                            .setPositiveButton("确认", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    sp.edit().clear().commit();
+                                    mLogin.setText(getString(R.string.login));
+                                }
+                            })
+                            .setNegativeButton("取消",null)
+                            .show();
+                }else {
+                    switchFragmnet(TYPE_LOGIN);
+                    setVisibility(View.GONE);
+                    mToolbar.setVisibility(View.GONE);
+                    mDrawerLayout.closeDrawer(Gravity.LEFT);
+                }
             }
         });
 
@@ -304,14 +365,26 @@ public class MainActivity extends BaseActivity<NetPresenter<NetView>, NetView> i
                     case R.id.wan_android_item:
                         switchFragmnet(TYPE_HOME);
                         setVisibility(View.VISIBLE);
+                        mToolbar.setVisibility(View.VISIBLE);
                         break;
                     case R.id.collection_item:
-                        switchFragmnet(TYPE_COLLECT);
-                        setVisibility(View.GONE);
+                        SharedPreferences sp = getSharedPreferences(Constants.LOGIN, MODE_PRIVATE);
+                        mLogin = mNavigationView.getHeaderView(0).findViewById(R.id.login_header);
+                        if (sp.getBoolean("loginBoolean",false)){
+                            switchFragmnet(TYPE_COLLECT);
+                            setVisibility(View.GONE);
+                            mToolbar.setVisibility(View.VISIBLE);
+                        }else {
+                            switchFragmnet(TYPE_LOGIN);
+                            setVisibility(View.GONE);
+                            mToolbar.setVisibility(View.GONE);
+                        }
+
                         break;
                     case R.id.settings_item:
                         switchFragmnet(TYPE_SETTING);
                         setVisibility(View.GONE);
+                        mToolbar.setVisibility(View.VISIBLE);
                         break;
                     case R.id.about_item:
                         startActivity(new Intent(MainActivity.this, AboutActivity.class));
@@ -346,25 +419,33 @@ public class MainActivity extends BaseActivity<NetPresenter<NetView>, NetView> i
 
     private void initFragment() {
         mFragments = new ArrayList<>();
-        mFragments.add(new HomeFragment());
+        mHomeFragment = new HomeFragment();
+        mFragments.add(mHomeFragment);
         mFragments.add(new KnowledgeFragment());
         mFragments.add(new WechatFragment());
         mFragments.add(new NavigationFragment());
         mFragments.add(new ProjectFragment());
-        mFragments.add(new CollectFragment());
+        mCollectFragment = new CollectFragment();
+        mFragments.add(mCollectFragment);
         mSettingsFragment = new SettingsFragment();
         mFragments.add(mSettingsFragment);
         mFragments.add(new LoginFragment());
         mFragments.add(new RegisterFragment());
     }
 
+    @SuppressLint("RestrictedApi")
     private void initWanAndroidFragment() {
+
+        //根据保存的碎片位置显示对应碎片
         mFragmentManager = getSupportFragmentManager();
         int nightType = (int) SpUtil.getParam(Constants.NIGHT_CURRENT_FRAG_POS, TYPE_HOME);
 
         FragmentTransaction transaction = mFragmentManager.beginTransaction();
-        mToolbarTitle.setText(mTitles.get(nightType));
         transaction.add(R.id.frameLayout, mFragments.get(nightType));
+        //隐藏TaabLayout
+        mTabLayout.setVisibility(View.GONE);
+        mFloatingActionButton.setVisibility(View.GONE);
+        mToolbarTitle.setText(mTitles.get(nightType));
         transaction.commit();
 
     }
@@ -398,7 +479,7 @@ public class MainActivity extends BaseActivity<NetPresenter<NetView>, NetView> i
 
     }
 
-    public void switchFragmnet(int type) {
+    public  void switchFragmnet(int type) {
         Fragment fragment = mFragments.get(type);
         FragmentTransaction transaction = mFragmentManager.beginTransaction();
         if (!fragment.isAdded()) {
@@ -485,9 +566,10 @@ public class MainActivity extends BaseActivity<NetPresenter<NetView>, NetView> i
                 tvNode.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
+                        CircularAnimUtil.show(tvNode);
                         Intent intent = new Intent(MainActivity.this, ShowUrlActivity.class);
                         intent.putExtra("url", dataBean.getLink());
-                        CircularAnimUtil.startActivity(MainActivity.this, intent, tvNode, mColors.get(finalI % 5));
+                        startActivity(intent);
                     }
                 });
 
@@ -524,9 +606,9 @@ public class MainActivity extends BaseActivity<NetPresenter<NetView>, NetView> i
 
     @Override
     public void onSerachData(HomeBean homeBean) {
+        mAdapter.addData(mQuary);
         if (homeBean != null) {
             if (homeBean.getDatas().size() > 0) {
-                mAdapter.addData(mQuary);
                 mViewSearchText.setText("");
 
                 Intent intent = new Intent(MainActivity.this, ShowSearch.class);
@@ -547,5 +629,17 @@ public class MainActivity extends BaseActivity<NetPresenter<NetView>, NetView> i
                 Toast.makeText(MainActivity.this, "抱歉，没有搜索内容", Toast.LENGTH_SHORT).show();
             }
         }
+    }
+
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void getEventMessage(EventMessage event) {
+        mLogin.setText(event.getMessage());
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        BaseApp.getRefWatcher(this).watch(mHomeFragment);
     }
 }

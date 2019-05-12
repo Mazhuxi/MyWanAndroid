@@ -12,9 +12,11 @@ import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.TextView;
 
+import com.majiaxin.app.BaseApp;
 import com.majiaxin.base.SimpleActivity;
 import com.majiaxin.bean.KnowledgeBean;
 import com.majiaxin.fragment.KnowArtFragment;
+import com.squareup.leakcanary.RefWatcher;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -99,4 +101,5 @@ public class KnowArticleActivity extends SimpleActivity {
     protected int getLayoutId() {
         return R.layout.activity_know_article;
     }
+
 }
